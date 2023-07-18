@@ -1,5 +1,5 @@
-# groovy-pekka-gpars
+# groovy-pekko-gpars
 
 Source code for:
-https://groovy.apache.org/blog/groovy-pekka-gpars
+https://groovy.apache.org/blog/groovy-pekko-gpars
 

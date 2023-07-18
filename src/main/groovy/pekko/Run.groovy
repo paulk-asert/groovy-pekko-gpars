@@ -1,4 +1,4 @@
-package pekka
+package pekko
 
 import org.apache.pekko.actor.typed.ActorSystem
 

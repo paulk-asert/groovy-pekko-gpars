@@ -1,18 +1,18 @@
 plugins {
-    id 'com.github.ben-manes.versions' version '0.47.0'
-    id 'com.autonomousapps.dependency-analysis' version '1.20.0'
+    id 'com.github.ben-manes.versions' version '0.50.0'
 }
 apply plugin: 'groovy'
 apply plugin: 'application'
 
 repositories {
     mavenCentral()
+//    maven { url 'https://repository.apache.org/content/groups/staging' }
 }
 
 dependencies {
-    implementation 'org.apache.groovy:groovy:4.0.13'
+    implementation 'org.apache.groovy:groovy:4.0.15'
     implementation 'org.codehaus.gpars:gpars:1.2.1'
     implementation platform('org.apache.pekko:pekko-bom_2.13:1.0.1')
     implementation 'org.apache.pekko:pekko-actor-typed_2.13'
-    runtimeOnly 'org.slf4j:slf4j-simple:2.0.7'
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.9'
 }

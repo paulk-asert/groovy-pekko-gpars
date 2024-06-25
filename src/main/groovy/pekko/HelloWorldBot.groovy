@@ -1,5 +1,6 @@
 package pekko
 
+import groovy.transform.CompileStatic
 import org.apache.pekko.actor.typed.Behavior
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior
 import org.apache.pekko.actor.typed.javadsl.ActorContext
@@ -25,6 +26,7 @@ class HelloWorldBot extends AbstractBehavior<HelloWorld.Greeted> {
         newReceiveBuilder().onMessage(HelloWorld.Greeted.class, this::onGreeted).build()
     }
 
+    @CompileStatic
     private Behavior<HelloWorld.Greeted> onGreeted(HelloWorld.Greeted message) {
         greetingCounter++
         context.log.info "Greeting $greetingCounter for $message.whom"

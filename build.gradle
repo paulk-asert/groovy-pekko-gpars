@@ -15,9 +15,9 @@ application {
 }
 
 dependencies {
-    implementation 'org.apache.groovy:groovy:4.0.21'
+    implementation 'org.apache.groovy:groovy:4.0.23'
     implementation 'org.codehaus.gpars:gpars:1.2.1'
-    implementation platform('org.apache.pekko:pekko-bom_2.13:1.0.3')
+    implementation platform('org.apache.pekko:pekko-bom_2.13:1.1.1')
     implementation 'org.apache.pekko:pekko-actor-typed_2.13'
-    runtimeOnly "org.slf4j:slf4j-simple:2.0.13"
+    runtimeOnly "org.slf4j:slf4j-simple:2.0.16"
 }

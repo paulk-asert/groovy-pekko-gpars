@@ -1,3 +1,5 @@
+package gpars
+
 import groovyx.gpars.actor.Actor
 import groovyx.gpars.actor.DefaultActor
 //import groovyx.gpars.actor.StaticDispatchActor

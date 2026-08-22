@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.ben-manes.versions' version '0.51.0'
+    id 'com.github.ben-manes.versions' version '0.61.0'
 }
 apply plugin: 'groovy'
 apply plugin: 'application'
@@ -9,15 +9,40 @@ repositories {
 //    maven { url 'https://repository.apache.org/content/groups/staging' }
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
 application {
-    mainClass = 'pekko.Run'
-//    mainClass = 'Run' // GPars (script doesn't have a package statement)
+    mainClass = 'groovy6.Run'
+//    mainClass = 'activeobject.Run'
+//    mainClass = 'pekko.Run'
+//    mainClass = 'gpars.Run'
 }
 
 dependencies {
-    implementation 'org.apache.groovy:groovy:4.0.23'
-    implementation 'org.codehaus.gpars:gpars:1.2.1'
-    implementation platform('org.apache.pekko:pekko-bom_2.13:1.1.1')
+    implementation 'org.apache.groovy:groovy:6.0.0-beta-2'
+    implementation platform('org.apache.pekko:pekko-bom_2.13:1.7.0')
     implementation 'org.apache.pekko:pekko-actor-typed_2.13'
-    runtimeOnly "org.slf4j:slf4j-simple:2.0.16"
+    // GPars is retained as a legacy reference (see the groovy6 package for the
+    // modern groovy.concurrent equivalent). Exclude its transitive Groovy so it
+    // doesn't clash with the Groovy 6 above.
+    implementation('org.codehaus.gpars:gpars:1.2.1') {
+        exclude group: 'org.codehaus.groovy'
+    }
+    runtimeOnly "org.slf4j:slf4j-simple:2.0.18"
+}
+
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+tasks.named('dependencyUpdates').configure {
+    rejectVersionIf {
+        isNonStable(it.candidate.version)
+    }
 }

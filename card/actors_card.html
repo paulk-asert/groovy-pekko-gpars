@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1176px; height: 660px;
+    background: #10141d;
+    font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+    color: #e8edf4;
+    padding: 40px 52px 32px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .top { display: flex; justify-content: space-between; align-items: baseline; }
+  .kicker { color: #6cb6ff; font-size: 15px; font-weight: 700; letter-spacing: 3.5px; }
+  .toplabel { color: #8b949e; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 14px; }
+  h1 { font-size: 40px; font-weight: 800; line-height: 1.2; margin-top: 14px; letter-spacing: -0.5px; }
+  h1 .accent { color: #6cb6ff; }
+  .panels { display: flex; gap: 24px; margin-top: 22px; flex: 1; }
+  .panel {
+    background: #161b26; border: 1px solid #2a3140; border-radius: 12px;
+    padding: 16px 20px; position: relative;
+  }
+  .panel.code { border-left: 3px solid #4caf7d; flex: 1.08; }
+  .panel.graph { border-left: 3px solid #f0b35e; flex: 0.92; padding: 14px 12px; }
+  .pill {
+    display: inline-block; font-size: 12.5px; font-weight: 700; letter-spacing: 2.5px;
+    padding: 4px 13px; border-radius: 999px; margin-bottom: 8px;
+  }
+  .pill.in { color: #7ee787; border: 1px solid #3f8b56; }
+  .pill.out { color: #f0b35e; border: 1px solid #9c7a3c; position: absolute; top: 14px; left: 16px; z-index: 2; }
+  pre {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 14.5px; line-height: 1.66; color: #e8edf4; margin-top: 4px;
+  }
+  .kw { color: #79c0ff; }
+  .ann { color: #f0b35e; }
+  .str { color: #a5d6a1; }
+  .mut { color: #768390; }
+  .footer { display: flex; justify-content: space-between; align-items: baseline; margin-top: 20px; }
+  .takeaway { font-size: 16.5px; color: #b7c1cc; max-width: 920px; }
+  .takeaway b { color: #e8edf4; }
+  .site { color: #8b949e; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 14px; }
+  svg text { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="kicker">APACHE GROOVY 6 · APACHE PEKKO</div>
+    <div class="toplabel">actors: hello world</div>
+  </div>
+  <h1>Three actors, <span class="accent">no message plumbing</span></h1>
+  <div class="panels">
+    <div class="panel graph">
+      <span class="pill out">THE ACTOR SYSTEM</span>
+      <svg width="100%" height="100%" viewBox="0 0 500 390">
+        <defs>
+          <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#6cb6ff"/>
+          </marker>
+        </defs>
+
+        <!-- spawn edges -->
+        <g stroke="#9c7a3c" stroke-width="1.8" fill="none">
+          <line x1="202" y1="96" x2="368" y2="174"/>
+          <line x1="166" y1="116" x2="145" y2="271"/>
+        </g>
+        <g fill="#f0b35e" font-size="13.5" font-weight="700">
+          <text x="238" y="106">★ 1 spawn</text>
+          <text x="66" y="200">★ 2 spawn</text>
+        </g>
+
+        <!-- message edges -->
+        <g stroke="#6cb6ff" stroke-width="2.4" fill="none">
+          <line x1="167" y1="277" x2="352" y2="195" marker-end="url(#blue)"/>
+          <line x1="369" y1="219" x2="184" y2="301" marker-end="url(#blue)" stroke-dasharray="9 7" stroke-width="2"/>
+        </g>
+
+        <!-- message labels -->
+        <g font-size="13.5" font-weight="700" text-anchor="middle">
+          <rect x="205" y="186" width="86" height="27" rx="6" fill="#16202e" stroke="#2f4a63"/>
+          <text x="248" y="204" fill="#6cb6ff">3 Greet</text>
+          <rect x="240" y="269" width="112" height="27" rx="6" fill="#16202e" stroke="#2f4a63"/>
+          <text x="296" y="287" fill="#6cb6ff">4 Greeted</text>
+        </g>
+
+        <!-- nodes -->
+        <g text-anchor="middle">
+          <circle cx="170" cy="78" r="34" fill="#16202e" stroke="#6cb6ff" stroke-width="2.5"/>
+          <text x="170" y="30" fill="#e8edf4" font-size="16" font-weight="700">HelloWorldMain</text>
+
+          <circle cx="400" cy="190" r="34" fill="#16202e" stroke="#6cb6ff" stroke-width="2.5"/>
+          <text x="400" y="146" fill="#e8edf4" font-size="16" font-weight="700">HelloWorld</text>
+
+          <circle cx="140" cy="305" r="34" fill="#16202e" stroke="#6cb6ff" stroke-width="2.5"/>
+          <text x="140" y="365" fill="#e8edf4" font-size="16" font-weight="700">HelloWorldBot</text>
+        </g>
+      </svg>
+    </div>
+    <div class="panel code">
+      <span class="pill in">GROOVY 6 · THE WHOLE BOT ACTOR</span>
+<pre><span class="ann">@ActiveObject</span>
+<span class="kw">class</span> HelloWorldBot {
+    <span class="kw">private final int</span> max
+    <span class="kw">private int</span> greetingCounter
+
+    HelloWorldBot(<span class="kw">int</span> max) { <span class="kw">this</span>.max = max }
+
+    <span class="ann">@ActiveMethod</span>(blocking = <span class="kw">false</span>)
+    <span class="kw">void</span> greeted(String whom, HelloWorld from) {
+        greetingCounter++
+        println <span class="str">"Greeting $greetingCounter for $whom"</span>
+        <span class="kw">if</span> (greetingCounter &lt; max)
+            from.greet(whom, <span class="kw">this</span>)
+    }
+}</pre>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="takeaway"><b>Groovy 6 actors are just annotated classes</b> — no Behavior types, no receive builder, no message records, no locks.</div>
+    <div class="site">groovy.apache.org/blog</div>
+  </div>
+</body>
+</html>

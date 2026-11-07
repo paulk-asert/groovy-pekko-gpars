@@ -19,4 +19,4 @@ then:
 ./gradlew run
 ```
 
-Tested with Groovy 6.0.0-beta-2, Pekko 1.7.0, and JDK 21 and 25.
+Tested with Groovy 6.0.0, Pekko 2.0.0, and JDK 21 and 25.

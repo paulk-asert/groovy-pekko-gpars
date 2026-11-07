@@ -23,8 +23,8 @@ application {
 }
 
 dependencies {
-    implementation 'org.apache.groovy:groovy:6.0.0-beta-2'
-    implementation platform('org.apache.pekko:pekko-bom_2.13:1.7.0')
+    implementation 'org.apache.groovy:groovy:6.0.0'
+    implementation platform('org.apache.pekko:pekko-bom_2.13:2.0.0')
     implementation 'org.apache.pekko:pekko-actor-typed_2.13'
     // GPars is retained as a legacy reference (see the groovy6 package for the
     // modern groovy.concurrent equivalent). Exclude its transitive Groovy so it

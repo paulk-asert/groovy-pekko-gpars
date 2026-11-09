@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1176px; height: 660px;
+    background: #10141d;
+    font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+    color: #e8edf4;
+    padding: 40px 52px 32px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .top { display: flex; justify-content: space-between; align-items: baseline; }
+  .kicker { color: #6cb6ff; font-size: 15px; font-weight: 700; letter-spacing: 3.5px; }
+  .toplabel { color: #8b949e; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 14px; }
+  h1 { font-size: 40px; font-weight: 800; line-height: 1.2; margin-top: 14px; letter-spacing: -0.5px; }
+  h1 .accent { color: #6cb6ff; }
+  .panels { display: flex; gap: 24px; margin-top: 22px; flex: 1; }
+  .panel {
+    background: #161b26; border: 1px solid #2a3140; border-radius: 12px;
+    padding: 16px 20px; position: relative;
+  }
+  .panel { min-width: 0; overflow: hidden; }
+  .panel.code { border-left: 3px solid #4caf7d; flex: 1.1; }
+  .panel.out { border-left: 3px solid #f47067; flex: 0.9; display: flex; flex-direction: column; gap: 14px; }
+  .pill.err { color: #f47067; border: 1px solid #9c4a45; }
+  .diag { border-top: 1px solid #2a3140; padding-top: 12px; }
+  .diag:first-of-type { border-top: none; padding-top: 0; }
+  .dlabel { font-size: 11.5px; font-weight: 700; letter-spacing: 2px; color: #8b949e; margin-bottom: 3px; }
+  .dlabel .what { color: #e8edf4; }
+  pre.err { font-size: 11px; line-height: 1.6; margin-top: 0; color: #f6a19a; }
+  pre.err .ce { color: #e8edf4; }
+  .pill {
+    display: inline-block; font-size: 12.5px; font-weight: 700; letter-spacing: 2.5px;
+    padding: 4px 13px; border-radius: 999px; margin-bottom: 8px;
+  }
+  .pill.in { color: #7ee787; border: 1px solid #3f8b56; }
+  .pill.out { color: #f0b35e; border: 1px solid #9c7a3c; position: absolute; top: 14px; left: 16px; z-index: 2; }
+  pre {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 12.4px; line-height: 1.66; color: #e8edf4; margin-top: 4px;
+  }
+  .kw { color: #79c0ff; }
+  .ann { color: #f0b35e; }
+  .str { color: #a5d6a1; }
+  .mut { color: #768390; }
+  .footer { display: flex; justify-content: space-between; align-items: baseline; margin-top: 20px; }
+  .takeaway { font-size: 16.5px; color: #b7c1cc; max-width: 920px; }
+  .takeaway b { color: #e8edf4; }
+  .site { color: #8b949e; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 14px; }
+  svg text { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  .hl { background: rgba(126, 231, 135, 0.16); border-radius: 3px; color: #7ee787; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="kicker">GROOVY-VERIFY (EXPERIMENTAL) · GROOVY 6 &amp; PEKKO ACTORS</div>
+    <div class="toplabel">deadlocks found at compile time?</div>
+  </div>
+  <h1>Actor bugs, <span class="accent">caught while you compile</span></h1>
+  <div class="panels">
+    <div class="panel code">
+      <span class="pill in">PEKKO · THE BOT, PROVED</span>
+<pre><span class="ann">@Invariant</span>({ max &gt;= 1 &amp;&amp; 0 &lt;= greetingCounter
+             &amp;&amp; <span class="hl">greetingCounter &lt; max</span> })
+<span class="kw">class</span> HelloWorldBot <span class="kw">extends</span> AbstractBehavior&lt;Greeted&gt; {
+    <span class="mut">// … fields, @Requires constructor, createReceive …</span>
+
+    <span class="kw">private</span> Behavior&lt;Greeted&gt; onGreeted(Greeted message) {
+        greetingCounter++
+        context.log.info <span class="str">"Greeting $greetingCounter for $message.whom"</span>
+        <span class="kw">if</span> (greetingCounter == max) {
+            <span class="kw">return</span> Behaviors.stopped()
+        } <span class="kw">else</span> {
+            message.from.tell(<span class="kw">new</span> Greet(message.whom, context.self))
+            <span class="kw">return this</span>
+        }
+    }
+}</pre>
+    </div>
+    <div class="panel out">
+      <span class="pill err" style="align-self: flex-start">THE COMPILER SAYS</span>
+      <div class="diag">
+        <div class="dlabel">INVARIANT · <span class="what">the weaker greetingCounter &lt;= max</span></div>
+<pre class="err">Cannot prove class invariant of onGreeted holds at method exit
+    <span class="ce">counterexample: greetingCounter = 1, max = 1</span></pre>
+      </div>
+      <div class="diag">
+        <div class="dlabel">REPLY · <span class="what">a greeter that skips long names</span></div>
+<pre class="err">onGreet may return without a reply on command.replyTo
+    <span class="ce">counterexample: command.whom = "ABCDEFGHIJKLMNOPQRSTUVWXYZ…"</span></pre>
+      </div>
+      <div class="diag">
+        <div class="dlabel">DEADLOCK · <span class="what">a Groovy 6 actor, bounded BLOCK mailbox</span></div>
+<pre class="err">Actor mailbox deadlock in 'knot': the send to 'worker'
+(line 12) is the 3rd to a mailbox bounded at 1 with
+Overflow.BLOCK … The handler cannot: it is waiting for
+the receive on 'gate' (line 8), which this method sends
+only at line 13, after the send that blocks. …</pre>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="takeaway"><b>A broken invariant, a missing reply, a mailbox deadlock</b> — each a compile error that says why.</div>
+    <div class="site">groovy.apache.org/blog</div>
+  </div>
+</body>
+</html>
